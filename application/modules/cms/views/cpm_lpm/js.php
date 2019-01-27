@@ -63,7 +63,7 @@ return false;
 </script>
 <script type="text/javascript">
     var IMAGES = "<?php echo (empty($foto))? '' : $foto; ?>";
-    var BASE   = "<?php echo 'uploads/';?>";
+    var BASE   = "<?php echo 'uploads/users/';?>";
 
     $("#file-3").fileinput({
         <?php if (!empty($foto)): ?>

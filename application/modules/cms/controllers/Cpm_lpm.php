@@ -221,7 +221,7 @@ class Cpm_lpm extends CI_Controller
                 }
             }
             
-
+                        
             $data['slug'] = $this->slug->create_uri($data);
 
             $this->Poktan_model->insert($data);
@@ -318,7 +318,6 @@ class Cpm_lpm extends CI_Controller
                 'tahun_pengadaan' => ($thn),
                 'keterangan' => $this->input->post('keterangan',TRUE),
                 'status' => $this->input->post('status',TRUE),
-                //'foto' => $this->input->post('foto',TRUE),
                 'id_kab' => ($idcab),
                 'id_kecamatan' => $this->input->post('id_kecamatan',TRUE),
                 'id_desa' => $this->input->post('id_desa',TRUE),
@@ -355,8 +354,8 @@ class Cpm_lpm extends CI_Controller
             }
 
             $data['slug'] = $this->slug->create_uri($data, $this->input->post('id_poktan', TRUE));
-                //print_r($data);
-                //die();
+            print_r ($data);
+            die();    
             $this->Poktan_model->update($this->input->post('id_poktan', TRUE), $data);
             $this->session->set_flashdata('success', 'Data berhasil diupdate');
             redirect(site_url('cms/cpm_lpm'));

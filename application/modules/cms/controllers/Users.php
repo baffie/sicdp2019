@@ -82,6 +82,7 @@ class Users extends MX_Controller
 			'active' => set_value('active'),
 			'name' => set_value('name'),
 			'nip' => set_value('nip'),
+			'foto' => set_value('foto'),
             'gender' => set_value('gender'),
             'id_kabupaten' =>set_value('id_kabupaten',$this->user->id_kabupaten),
             'id_kecamatan' => set_value('id_kecamatan'),
@@ -149,6 +150,37 @@ class Users extends MX_Controller
 				'phone'      => $this->input->post('phone'),
 			);
 			
+			//upload foto
+				if (!empty($_FILES['foto']) && !empty($_FILES['foto']['name'])) {
+
+				$upload_img = FCPATH.'uploads/';
+				$file_name = date("Ymd") . '_' . trim($_FILES['foto']['name']);
+
+				if (!is_dir($upload_img) && !is_writeable($upload_img)) mkdir($upload_img, 0777, true);
+
+				$config['upload_path'] = $upload_img;
+				$config['allowed_types'] = 'jpg|jpeg|png';
+				$config['file_type'] = 'image/jpeg';
+				$config['file_name'] = $file_name;
+				$config['overwrite'] = TRUE;
+
+				$this->load->library('upload', $config);
+
+				if (!$this->upload->do_upload('foto')) {
+					$this->session->set_flashdata('error', $this->upload->display_errors());
+					redirect(site_url('cms/users'));
+				} else {
+					$this->load->library('image_lib');
+					$upload_data = $this->upload->data();
+
+					$this->resize_image($upload_img . $upload_data['file_name'], 400, 400,$upload_img);
+					$this->resize_image($upload_img . $upload_data['file_name'], 125, 125,$upload_img.'/thumbs/');
+
+					$additional_data['foto'] = $upload_data['raw_name'] . $upload_data['file_ext'];
+					}
+				}
+			//print_r ($additional_data);
+			//die();
 			$this->ion_auth->register($identity, $password, $email, $additional_data);
 			$this->session->set_flashdata('success', 'Create Record Success');
 			redirect(site_url('cms/users'));
@@ -170,6 +202,7 @@ class Users extends MX_Controller
 				'name' => set_value('name', $row->name),
 				'nip' => set_value('nip', $row->nip),
                 'gender' => set_value('nip', $row->gender),
+				'foto' => set_value('foto', $row->foto),
                 'id_kabupaten' =>set_value('id_kabupaten', $row->id_kabupaten),
                 'id_kecamatan' => set_value('id_kecamatan', $row->id_kecamatan),
                 'id_desa' => set_value('id_desa', explode(",", $row->id_desa)),
@@ -195,6 +228,7 @@ class Users extends MX_Controller
             $template['page_heading'] = 'Operator';
 			$template['content'] = $this->load->view('users/form', $data, true);
             $template['js'] = $this->load->view('users/js', $data, true);
+			$template['css'] = $this->load->view('users/css', $data, true);
 			$this->load->view('backend/layouts/dashboard', $template);
 		} else {
 			$this->session->set_flashdata('success', 'Record Not Found');
@@ -239,12 +273,44 @@ class Users extends MX_Controller
                     'active' => $this->input->post('active', TRUE),
                     'name' => $this->input->post('name', TRUE),
                     'nip' => $this->input->post('nip', TRUE),
+					//'foto' => $this->input->post('foto', TRUE),
                     'gender' => $this->input->post('gender', TRUE),
                     'id_kabupaten' => ($idkab),
                     'id_kecamatan' => $this->input->post('id_kecamatan', TRUE),
                     'id_desa' => $relateds,
                     'phone' => $this->input->post('phone', TRUE),
                 );
+				
+				//upload foto
+				if (!empty($_FILES['foto']) && !empty($_FILES['foto']['name'])) {
+
+				$upload_img = FCPATH.'uploads/';
+				$file_name = date("Ymd") . '-' . trim($_FILES['foto']['name']);
+
+				if (!is_dir($upload_img) && !is_writeable($upload_img)) mkdir($upload_img, 0777, true);
+
+				$config['upload_path'] = $upload_img;
+				$config['allowed_types'] = 'jpg|jpeg|png';
+				$config['file_type'] = 'image/jpeg';
+				$config['file_name'] = $file_name;
+				$config['overwrite'] = TRUE;
+				
+				$this->load->library('upload', $config);
+
+				if (!$this->upload->do_upload('foto')) {
+					$this->session->set_flashdata('error', $this->upload->display_errors());
+					redirect(site_url('cms/users'));
+				} else {
+					$this->load->library('image_lib');
+					$upload_data = $this->upload->data();
+
+					$this->resize_image($upload_img . $upload_data['file_name'], 400, 400,$upload_img);
+					$this->resize_image($upload_img . $upload_data['file_name'], 125, 125,$upload_img.'/thumbs/');
+
+					$data['foto'] = $upload_data['raw_name'] . $upload_data['file_ext'];
+					}
+				}
+				
                 // update the password if it was posted
                 if ($this->input->post('password'))
                 {
@@ -267,7 +333,7 @@ class Users extends MX_Controller
 
                     }
                 }
-
+				
                 // check to see if we are updating the user
                 if($this->ion_auth->update($user->id, $data))
                 {
@@ -300,7 +366,7 @@ class Users extends MX_Controller
 
             }
         }
-
+		
 		$this->update($this->input->post('id', TRUE));
 	}
 
@@ -316,6 +382,25 @@ class Users extends MX_Controller
 			$this->session->set_flashdata('error', 'Record Not Found');
 			redirect(site_url('cms/users'));
 		}
+	}
+	
+	public function resize_image($file_path, $width, $height, $new_image)
+	{
+		$img_cfg['image_library'] = 'gd2';
+		$img_cfg['source_image'] = $file_path;
+		$img_cfg['maintain_ratio'] = TRUE;
+		$img_cfg['create_thumb'] = TRUE;
+		$img_cfg['thumb_marker']='';
+		$img_cfg['new_image'] = $new_image;
+		$img_cfg['width'] = $width;
+		$img_cfg['height'] = $height;
+
+		$this->image_lib->initialize($img_cfg);
+		if (!$this->image_lib->resize()){
+			$this->session->set_flashdata('error', $this->image_lib->display_errors('', ''));
+		}
+		$this->image_lib->clear();
+
 	}
 
 	function _get_csrf_nonce()

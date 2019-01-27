@@ -10,7 +10,7 @@
                 <i class="fa fa-times"></i></button>
         </div>
     </div>
-    <form action="<?php echo $action; ?>" method="post" class="form-horizontal">
+    <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" class="form-horizontal">
     <div class="box-body">
             <div class="form-group">
                 <label class="col-sm-2 control-label">Nama Lengkap <small class="text-danger">*</small></label>
@@ -31,6 +31,20 @@
                     <input type="text" class="form-control" name="nip" id="nip" placeholder="NIP" value="<?php echo $nip; ?>" />
                 </div>
             </div>
+            <div class="form-group <?php echo form_error('foto') ? 'has-error has-feedback' : '' ?>">
+            <label for="foto" class="col-sm-2 control-label">Foto</label>
+            <div class="col-sm-8">
+                <input type="file" id="file-3" data-show-upload="false" accept="image/*" name="foto">
+                <span class="help-block">File extension: <strong>JPEG (.jpg), PNG (.png)</strong></span>
+                <?php
+                if (form_error('foto'))
+                {
+                    echo '<p class="help-block">'.form_error('foto').'</p>
+                    <span class="glyphicon glyphicon-remove form-control-feedback"></span>';
+                }
+                ?>
+            </div>
+        </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Jenis Kelamin <small class="text-danger">*</small></label>
                 <div class="col-sm-6">

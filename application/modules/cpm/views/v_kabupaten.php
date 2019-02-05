@@ -69,7 +69,7 @@
     <tr>
         <th width="50px">No</th>
         <th >Kabupaten / Kota</th>
-        <th width="200px"><!--<a href="<?php echo site_url('cpm/provinsi_lpm'); ?>" class="btn btn-sm btn-success" target="_blank"><i class="fa fa-share"></i> All Kabupaten--></th>
+        <th width="200px"><!--<a href="<?php echo site_url('cpm/provinsi_lpm'); ?>" class="btn btn-sm btn-success" target=_blank><i class="fa fa-share"></i> All Kabupaten--></th>
     </tr>
     </thead>
     <tbody>
@@ -81,10 +81,10 @@
             <tr>
                 <td><?php echo ++$start ?></td>
                 <td align = "left"><a href="<?php echo site_url('cpm/kota/view/' . $row['id_kab']); ?>"
-                       title="<?php echo $row['nama_kab'] ?>"><?php echo $row['nama_kab'] ?></a></td>
+                       title="Detail rekapitulasi data cadangan pangan <?php echo $row['nama_kab'] ?>" target=_blank><?php echo $row['nama_kab'] ?></a></td>
                 <td>
                     <a href="<?php echo site_url('cpm/kota/view/' . $row['id_kab']); ?>"
-                       class="btn btn-sm btn-success" title="Detail <?php echo $row['nama_kab'] ?>"><i class="fa fa-share"></i> Detail</a>
+                       class="btn btn-sm btn-success" title="Detail rekapitulasi data cadangan pangan <?php echo $row['nama_kab'] ?>" target=_blank><i class="fa fa-share"></i> Detail</a>
                 </td>
             </tr>
             <?php

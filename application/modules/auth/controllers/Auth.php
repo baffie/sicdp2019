@@ -7,7 +7,7 @@ class Auth extends Frontend_Controller {
         parent::__construct();
         $this->load->library(array('ion_auth','form_validation'));
         $this->load->helper(array('url','language'));
-
+        $this->load->model('Users_model');
         $this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
 
         $this->lang->load('auth');
@@ -137,6 +137,7 @@ class Auth extends Frontend_Controller {
             $additional_data = array(
                 'name' => $this->input->post('name'),
                 'nip' => $this->input->post('nip'),
+                'foto' => $this->input->post('foto'),
                 'gender' => $this->input->post('gender'),
                 'id_kabupaten' =>$this->input->post('id_kabupaten'),
                 'id_kecamatan' => $this->input->post('id_kecamatan'),
@@ -166,6 +167,7 @@ class Auth extends Frontend_Controller {
                 'active' => set_value('active'),
                 'name' => set_value('name'),
                 'nip' => set_value('nip'),
+                'foto' => set_value('foto'),
                 'gender' => set_value('gender'),
                 'id_kabupaten' =>set_value('id_kabupaten'),
                 'id_kecamatan' => set_value('id_kecamatan'),
@@ -181,7 +183,7 @@ class Auth extends Frontend_Controller {
             $this->data['load_cities']	= $this->Kabupaten_model->get_category_select(array('' => '-- Pilih Kabupaten/Kota --'));
             $this->data['load_kecamatan']	= $this->Kecamatan_model->select_dropdown_kecamatan($this->data['id_kabupaten']);
             $this->data['load_kelurahan']	= $this->Kelurahan_model->select_dropdown_kelurahan($this->data['id_kecamatan']);
-
+                
             $template['title'] = 'Daftar';
             $this->load->view('auth/register', $this->data);
         }
@@ -203,7 +205,7 @@ class Auth extends Frontend_Controller {
         // validate form input
         $this->form_validation->set_rules('name', 'Nama Lengkap', 'required');
         $this->form_validation->set_rules('gender', 'Jenis Kelamin', 'required');
-        $this->form_validation->set_rules('id_desa', 'Wilayah Binaan', 'required');
+        //$this->form_validation->set_rules('id_desa', 'Wilayah Binaan', 'required');
 
         if (isset($_POST) && !empty($_POST))
         {
@@ -228,8 +230,35 @@ class Auth extends Frontend_Controller {
                     'nip' => $this->input->post('nip', TRUE),
                     'gender' => $this->input->post('gender', TRUE),
                     'phone' => $this->input->post('phone', TRUE),
-                    'id_desa' => $relateds,
+                    //'id_desa' => $relateds,
                 );
+                
+                if (!empty($_FILES['foto']) && !empty($_FILES['foto']['name'])) {
+                   $upload_img = FCPATH.'uploads/users/';
+                   $file_name = date("Ymd") . '_' . trim($_FILES['foto']['name']);
+                   
+                   if (!is_dir($upload_img) && !is_writeable($upload_img)) mkdir($upload_img, 0777, true);
+                       $config['upload_path'] = $upload_img;
+                       $config['allowed_types'] = 'jpg|jpeg|png';
+                       $config['file_type'] = 'image/jpeg';
+                       $config['file_name'] = $file_name;
+                       $config['overwrite'] = TRUE;
+                       
+                       $this->load->library('upload', $config);
+
+                        if (!$this->upload->do_upload('foto')) {
+                           $this->session->set_flashdata('error', $this->upload->display_errors());
+                           redirect(site_url('cms/users'));
+                           } else {
+                             $this->load->library('image_lib');
+                             $upload_data = $this->upload->data();
+
+                             $this->resize_image($upload_img . $upload_data['file_name'], 400, 400,$upload_img);
+                             $this->resize_image($upload_img . $upload_data['file_name'], 125, 125,$upload_img.'thumbs/');
+
+                             $additional_data['foto'] = $upload_data['raw_name'] . $upload_data['file_ext'];
+                           }
+                   }       
 
                 // update the password if it was posted
                 if ($this->input->post('password'))
@@ -269,6 +298,7 @@ class Auth extends Frontend_Controller {
         $this->data['email'] = set_value('email', $user->email);
         $this->data['name'] = set_value('name', $user->name);
         $this->data['nip'] = set_value('nip', $user->nip);
+        $this->data['foto'] = set_value('foto', $user->foto);
         $this->data['gender'] = set_value('nip', $user->gender);
         $this->data['phone'] = set_value('phone', $user->phone);
         $this->data['id_kecamatan'] = set_value('id_kecamatan', $user->id_kecamatan);
@@ -279,6 +309,7 @@ class Auth extends Frontend_Controller {
 
         $template['page_heading'] = 'Profil Anda';
         $template['content'] = $this->load->view('profile', $this->data, true);
+        $template['js'] = $this->load->view('auth/js', $data, true);
         $this->load->view('layouts/dashboard', $template);
     }
 

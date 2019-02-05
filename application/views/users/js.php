@@ -4,7 +4,7 @@
 <script src="<?php echo base_url('assets/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js') ?>"></script>
 <script type="text/javascript">
     var IMAGES = "<?php echo (empty($foto))? '' : $foto; ?>";
-    var BASE   = "<?php echo 'uploads/';?>";
+    var BASE   = "<?php echo 'uploads/users/';?>";
 
     $("#file-3").fileinput({
         <?php if (!empty($foto)): ?>

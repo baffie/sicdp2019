@@ -153,7 +153,7 @@ class Users extends MX_Controller
 			//upload foto
 				if (!empty($_FILES['foto']) && !empty($_FILES['foto']['name'])) {
 
-				$upload_img = FCPATH.'uploads/';
+				$upload_img = FCPATH.'uploads/users/';
 				$file_name = date("Ymd") . '_' . trim($_FILES['foto']['name']);
 
 				if (!is_dir($upload_img) && !is_writeable($upload_img)) mkdir($upload_img, 0777, true);
@@ -174,7 +174,7 @@ class Users extends MX_Controller
 					$upload_data = $this->upload->data();
 
 					$this->resize_image($upload_img . $upload_data['file_name'], 400, 400,$upload_img);
-					$this->resize_image($upload_img . $upload_data['file_name'], 125, 125,$upload_img.'/thumbs/');
+					$this->resize_image($upload_img . $upload_data['file_name'], 125, 125,$upload_img.'thumbs/');
 
 					$additional_data['foto'] = $upload_data['raw_name'] . $upload_data['file_ext'];
 					}
@@ -284,7 +284,7 @@ class Users extends MX_Controller
 				//upload foto
 				if (!empty($_FILES['foto']) && !empty($_FILES['foto']['name'])) {
 
-				$upload_img = FCPATH.'uploads/';
+				$upload_img = FCPATH.'uploads/users/';
 				$file_name = date("Ymd") . '-' . trim($_FILES['foto']['name']);
 
 				if (!is_dir($upload_img) && !is_writeable($upload_img)) mkdir($upload_img, 0777, true);

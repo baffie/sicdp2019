@@ -85,13 +85,13 @@
             ?>
             <tr>
                 <td><?php echo ++$start ?></td>
-                <td><a href="<?php echo site_url('profil/ldpm/data/'.$row['slug']); ?>" title="<?php echo $row['nama_gapoktan'] ?>"><?php echo $row['nama_gapoktan'] ?></a></td>
+                <td><a href="<?php echo site_url('profil/ldpm/data/'.$row['slug']); ?>" title="<?php echo $row['nama_gapoktan'] ?>" target=_blank><?php echo $row['nama_gapoktan'] ?></a></td>
                 <td><?php echo $row['alamat'] ?></td>
                 <td><?php echo number_format ($row['luas_lahan'],2,',','.'); ?></td>
                 <td><?php echo $row['jumlah_anggota'] ?></td>
                 <td><?php echo $row['name'] ?></td>
                 <td>
-                    <a href="<?php echo site_url('profil/ldpm/view/'.$row['slug']); ?>" class="btn btn-sm btn-success"><i class="fa fa-share"></i> Detail</a>
+                    <a href="<?php echo site_url('profil/ldpm/view/'.$row['slug']); ?>" class="btn btn-sm btn-success" target=_blank><i class="fa fa-share"></i> Detail</a>
                 </td>
             </tr>
             <?php

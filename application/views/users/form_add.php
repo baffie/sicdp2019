@@ -45,7 +45,7 @@
                 }
                 ?>
             </div>
-        </div>
+            </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Jenis Kelamin <small class="text-danger">*</small></label>
                 <div class="col-sm-6">
@@ -70,7 +70,7 @@
                 </div>
             </div>
 
-            <!--<div class="form-group">
+            <div class="form-group">
                 <label class="col-sm-2 control-label">Kabupaten/Kota <?php echo form_error('id_kabupaten') ?></label>
                 <div class="col-sm-6">
                     <?php echo form_dropdown('id_kabupaten', $load_cities, $id_kabupaten, 'id="id_kabupaten" class="form-control select2"'); ?>
@@ -81,7 +81,7 @@
                     }
                     ?>
                 </div>
-            </div>-->
+            </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Kecamatan <?php echo form_error('id_kecamatan') ?></label>
                 <div class="col-sm-6">
